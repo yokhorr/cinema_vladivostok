@@ -1,0 +1,5 @@
+.git_token.txt
+.bot_token.txt
+.idea
+data
+__pycache__

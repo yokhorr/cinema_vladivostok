@@ -8,7 +8,7 @@ from datetime import datetime
 # get the HTML document
 def collect_data(date: str):
     response = requests.get(url='https://kino.vl.ru/films/seances/')
-    with open(f'info_{date}.html', 'w') as file:
+    with open(f'data_{date}.html', 'w') as file:
         file.write(response.text)
 
 
@@ -40,7 +40,7 @@ def write_event(curr_date, curr_time, curr_name, theatres, events):
 # parse films from the HTML document
 def parse_data(date: str):
     # `date` means the real today's date; `curr_date` and `curr_time` are intended for currently parsing elements
-    with open(f'info_{date}.html') as file:
+    with open(f'data_{date}.html') as file:
         soup = BeautifulSoup(file, 'html.parser')
 
     events = {}
@@ -81,7 +81,7 @@ def parse_data(date: str):
 def save_data(events: dict, date: str):
     # create json
 
-    # with open(f'info_{date}.json', 'w') as file:
+    # with open(f'data_{date}.json', 'w') as file:
     #     json.dump(events, file, indent=4, ensure_ascii=False)
 
     with open(f'data_{date}.csv', 'w') as file:
