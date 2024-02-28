@@ -1,7 +1,9 @@
+__pycache__
 .git_token.txt
 .bot_token.txt
 .idea
 *.csv
 *.json
 *.html
-__pycache__
+*.ods
+*.xlsx
