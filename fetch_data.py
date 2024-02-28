@@ -8,6 +8,8 @@ from datetime import datetime
 # get the HTML document
 def collect_data(date: str):
     response = requests.get(url='https://kino.vl.ru/films/seances/')
+    if response.status_code != 200:
+        raise KeyError('Response is not 200')
     with open(f'data_{date}.html', 'w') as file:
         file.write(response.text)
 

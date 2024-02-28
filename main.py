@@ -18,7 +18,11 @@ async def dev(message: types.Message):
 async def lev(message: types.Message):
     t_date = datetime.now().strftime('%d_%m_%Y')
     if not os.path.isfile(f'data_{t_date}.csv'):  # check whether file exists
-        fetch_data()
+        try:
+            fetch_data()
+        except:
+            await message.answer('Кажется, проблемы с сайтом :/')
+            return
     await message.answer_document(types.InputFile(f'data_{t_date}.csv'))
 
 
