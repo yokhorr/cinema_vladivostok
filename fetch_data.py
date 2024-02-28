@@ -14,18 +14,14 @@ def collect_data(date: str):
 
 # delete day of the week and extra whitespaces
 def get_clear_text(text: str):
-    result = ""
-    prev = ''
-    skip = True
-    for c in text:
-        if skip and not c.isdigit():
-            continue
-        if c == prev == ' ':
+    text = text.strip()
+    days_of_week = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
+    for day in days_of_week:
+        rubbish = str(day + ', ')
+        if rubbish in text:
+            text = text.removeprefix(rubbish)
             break
-        skip = False
-        result += c
-        prev = c
-    return result[:-1]
+    return text
         
         
 # write the event; if success, return true
@@ -80,16 +76,17 @@ def parse_data(date: str):
 
 def save_data(events: dict, date: str):
     # create json
+    with open(f'data_{date}.json', 'w') as file:
+        json.dump(events, file, indent=4, ensure_ascii=False)
 
-    # with open(f'data_{date}.json', 'w') as file:
-    #     json.dump(events, file, indent=4, ensure_ascii=False)
-
+    # write headers
     with open(f'data_{date}.csv', 'w') as file:
         writer = csv.writer(file)
         writer.writerow(
             ('Date', 'Time', 'Film', 'Theatre')
         )
 
+    # write contents
     with open(f'data_{date}.csv', 'a') as file:
         writer = csv.writer(file)
         for [f_date, times] in events.items():
