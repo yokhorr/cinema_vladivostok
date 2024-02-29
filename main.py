@@ -27,7 +27,7 @@ async def showtimes(message: types.Message):
     log(message)
     request = message.text.split()
     t_date = datetime.now().strftime('%d_%m_%Y')
-    if not os.path.isfile(f'data_{t_date}.csv'):  # check whether file exists
+    if not os.path.isfile(f'data/data_{t_date}.csv'):  # check whether file exists
         try:
             fetch_data()
         except:
@@ -39,7 +39,7 @@ async def showtimes(message: types.Message):
     else:
         ext = request[1]
 
-    if not os.path.isfile(f'data_{t_date}.{ext}'):
+    if not os.path.isfile(f'data/data_{t_date}.{ext}'):
         await message.answer('Wrong file format requested')
     else:
         await message.answer_document(types.InputFile(f'data_{t_date}.{ext}'))

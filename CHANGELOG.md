@@ -1,3 +1,9 @@
+# Version 1.1.1 (29.02.24):
+- added `requrements.txt`
+- added some annotations
+- changed `.gitignore`
+- added `data` directory for all documents
+
 # Version 1.1 (28.02.24):
 - completely rewritten function `parse_data`:
   - removed try-except constructions
