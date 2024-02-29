@@ -1,10 +1,9 @@
 import os
-
 import requests
-from bs4 import BeautifulSoup
 import csv
 import json
 from datetime import datetime
+from bs4 import BeautifulSoup
 
 
 # get the HTML document
@@ -17,7 +16,7 @@ def collect_data(date: str):
 
 
 # delete day of the week and extra whitespaces
-def get_clear_text(text: str) -> tuple:
+def get_clear_text(text: str) -> tuple[str, str]:
     text = text.strip()
     days_of_week = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
     found_day = None
@@ -31,7 +30,7 @@ def get_clear_text(text: str) -> tuple:
 
 
 # list of pairs film_name - theatre (possibly more than one theatre)
-def name_to_theatre(elem) -> list:
+def name_to_theatre(elem: BeautifulSoup) -> list[tuple[str, str]]:
     result = []
     film_name = elem.get_text().strip()
     for theatre in elem.parent.find(class_='table-responsive__theatre-name').find_all('a'):
@@ -108,6 +107,7 @@ def save_data(events: dict, days_of_week: dict, date: str) -> None:
 
 
 def main():
+    os.chdir('data')
     t_date = datetime.now().strftime('%d_%m_%Y')
     collect_data(t_date)
     events, days_of_week = parse_data(t_date)
