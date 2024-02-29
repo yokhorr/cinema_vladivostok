@@ -2,6 +2,7 @@ bin
 data
 include
 lib
+lib*
 lib64
 
 __pycache__
@@ -10,4 +11,5 @@ __pycache__
 .bot_token.txt
 .idea
 
+pyvenv.cfg
 log.csv
