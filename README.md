@@ -20,7 +20,7 @@ If not, it starts module `fetch_data.py` to get it.
 With `/showtimes {ext}` (without a dot `.`) user can request a `.csv`, `.ods` or `.json` file (default is `.xlsx`).
 
 ### `fetch_data.py`
-In module `fetch_data.py` function `collect_data` gets an HTML document from https://kino.vl.ru/films/seances/
+In module `fetch_data.py` function `collect_data` gets an HTML document from https://kino.vl.ru/films/seances/.
 If the response code is not `200`, the module returns an error.
 
 Then the received document is parsed in `parse_data` using `BeautifulSoup`. The data collected is film date, time, name and theatre.
