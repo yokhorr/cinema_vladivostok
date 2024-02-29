@@ -1,6 +1,6 @@
 bin
 include
-data/*
+/data/*
 lib
 lib64
 
