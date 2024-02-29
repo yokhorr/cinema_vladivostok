@@ -1,8 +1,13 @@
-# Version 1.1.1 (29.02.24):
+# Version 1.2 (29.02.24):
 - added `requrements.txt`
 - added some annotations
 - changed `.gitignore`
 - added `data` directory for all documents
+- fixed pathways
+- added log file creation if not one
+- information about available formats moved from `greet.md` to `info.md`
+- written a detailed `README.md`
+
 
 # Version 1.1 (28.02.24):
 - completely rewritten function `parse_data`:
@@ -19,5 +24,9 @@
   - added commands menu
   - added description
   - added choice of file format (`.csv` `.ods`, `.xlsx`)
-- added convertion from `.csv` to ``.ods`` and `.xlsx`
+- added conversion from `.csv` to ``.ods`` and `.xlsx`
 - added `greet.md`
+
+
+# Version 1.0 (27.02.24)
+- the minimum viable product created

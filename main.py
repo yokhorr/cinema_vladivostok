@@ -42,7 +42,7 @@ async def showtimes(message: types.Message):
     if not os.path.isfile(f'data/data_{t_date}.{ext}'):
         await message.answer('Wrong file format requested')
     else:
-        await message.answer_document(types.InputFile(f'data_{t_date}.{ext}'))
+        await message.answer_document(types.InputFile(f'data/data_{t_date}.{ext}'))
 
 
 @dp.message_handler(commands=['start'])
@@ -67,4 +67,10 @@ async def log_messages(message: types.Message):
 
 
 if __name__ == '__main__':
+    if not os.path.isfile('log.csv'):  # create a log file if needed
+        with open('log.csv', 'w') as file:
+            writer = csv.writer(file)
+            writer.writerow(
+                ['Date', 'Time', 'ID', 'Username', 'First name', 'Last name', 'Message']
+            )
     executor.start_polling(dp, skip_updates=True)  # start bot

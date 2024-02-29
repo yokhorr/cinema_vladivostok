@@ -15,7 +15,7 @@ def collect_data(date: str):
         file.write(response.text)
 
 
-# delete day of the week and extra whitespaces
+# separate the day of the week and delete extra whitespaces
 def get_clear_text(text: str) -> tuple[str, str]:
     text = text.strip()
     days_of_week = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
@@ -112,6 +112,7 @@ def main():
     collect_data(t_date)
     events, days_of_week = parse_data(t_date)
     save_data(events, days_of_week, t_date)
+    os.chdir('..')
     
 
 def fetch_data():
