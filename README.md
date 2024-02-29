@@ -13,13 +13,13 @@ In a word, anything your table editor and your skills allow you to do.
 5. Run `main.py` to start the bot
 
 # Documentation
-## `main.py`
+### `main.py`
 The main script starting the bot is `main.py`. Every message sent to the bot is logged in `log.csv`.
 Receiving the `/showtimes` command bot checks first whether a schedule of the current date already exists.
 If not, it starts module `fetch_data.py` to get it.
 With `/showtimes {ext}` (without a dot `.`) user can request a `.csv`, `.ods` or `.json` file (default is `.xlsx`).
 
-## `fetch_data.py`
+### `fetch_data.py`
 In module `fetch_data.py` function `collect_data` gets an HTML document from https://kino.vl.ru/films/seances/
 If the response code is not `200`, the module returns an error.
 
@@ -29,7 +29,7 @@ Two films are considered as different events if all above parameters differ.
 Finally, events are written to a `.csv` and a `.json` files named with the date of the request in `save_data`.
 The `.csv` file is converted to `.xlsx` and `.ods` with `libreoffice`.
 
-## Other files
+### Other files
 - `requirements.txt` contain required libraries
 - `CHANGELOD.md` describes updates for every new version
 - `greet.md` and `info.md` are for the bot `/start` and `/info` commands
@@ -49,11 +49,11 @@ The `.csv` file is converted to `.xlsx` and `.ods` with `libreoffice`.
 - [ ] Find another way to convert files from `.csv` to `.xlsx` and `.ods`
 
 # Gallery
-## Bot in Telegram
+### Bot in Telegram
 <img src="https://github.com/yokhor/cinema_vladivostok/assets/97782643/bbe3e540-9cde-41cc-b518-b48616bee020" alt="Bot in Telegram" width="100%"/>
 
-## Table in LibreOffice
+### Table in LibreOffice
 <img src="https://github.com/yokhor/cinema_vladivostok/assets/97782643/56282270-50a7-446f-97eb-5a820afb5a98" alt="Table in LibreOffice" width="100%"/>
 
-## Filtering data in table
+### Filtering data in table
 <img src="https://github.com/yokhor/cinema_vladivostok/assets/97782643/5a14bd39-ce3d-402d-9c84-96e6938e93e0" alt="Filtering data in table" width="100%"/>
