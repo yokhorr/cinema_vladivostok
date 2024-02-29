@@ -5,7 +5,7 @@ lib64
 
 __pycache__
 
-.git_token.txt
+.token_git
 .bot_token.txt
 .idea
 
