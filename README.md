@@ -26,6 +26,8 @@ If the response code is not `200`, the module returns an error.
 Then the received document is parsed in `parse_data` using `BeautifulSoup`. The data collected is film date, time, name and theatre.
 Two films are considered as different events if all above parameters differ.
 
+`parse_cost` additionally parses the cost of the ticket for the event.
+
 Finally, events are written to a `.csv` and a `.json` files named with the date of the request in `save_data`.
 The `.csv` file is converted to `.xlsx` and `.ods` with `libreoffice`.
 

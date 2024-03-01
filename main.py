@@ -29,6 +29,7 @@ async def showtimes(message: types.Message):
     t_date = datetime.now().strftime('%d_%m_%Y')
     if not os.path.isfile(f'data/data_{t_date}.csv'):  # check whether file exists
         try:
+            await message.answer('Это первый запрос за день, придётся подождать...')
             fetch_data()
         except:
             await message.answer('Что-то пошло не так :/')
@@ -48,7 +49,6 @@ async def showtimes(message: types.Message):
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     log(message)
-
     await message.answer(open('greet.md').read(), parse_mode='MarkdownV2')
 
 

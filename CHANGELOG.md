@@ -1,3 +1,8 @@
+# Version 1.3 (01.03.24):
+- added ticket cost
+  - added function `parse_cost`
+- now script works a couple of minutes, so the first requested takes a long time
+
 # Version 1.2 (29.02.24):
 - added `requrements.txt`
 - added some annotations
