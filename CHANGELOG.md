@@ -1,3 +1,7 @@
+# Version 1.4 (02.03.24):
+- added 10 other cities
+- added `cities.txt`
+
 # Version 1.3 (01.03.24):
 - added ticket cost
   - added function `parse_cost`

@@ -22,28 +22,41 @@ async def dev(message: types.Message):
     await message.answer(open('info.md').read(), parse_mode='MarkdownV2')
 
 
+@dp.message_handler(commands=['cities'])
+async def dev(message: types.Message):
+    log(message)
+    await message.answer(open('cities.txt').read())
+
+
 @dp.message_handler(commands=['showtimes'])
 async def showtimes(message: types.Message):
     log(message)
     request = message.text.split()
+    city = 'vladivostok'
+    ext = 'xlsx'
+    cities = ['vladivostok', 'artem', 'arsenyev', 'ussuriysk', 'nakhodka', 'spassk', 'vrangel', 'dalnegorsk',
+              'partizansk', 'chernigovka', 'preobrazhenie']
+    if len(request) > 1:
+        if not (0 <= int(request[1]) <= 10):
+            await message.answer('Указан неверный номер города.')
+            return
+        city = cities[int(request[1])]
+        print(city)
+    if len(request) > 2:
+        ext = request[2]
     t_date = datetime.now().strftime('%d_%m_%Y')
-    if not os.path.isfile(f'data/data_{t_date}.csv'):  # check whether file exists
+    if not os.path.isfile(f'data/data_{city}_{t_date}.json'):  # check whether file exists
         try:
             await message.answer('Это первый запрос за день, придётся подождать...')
-            fetch_data()
+            fetch_data(city)
         except:
             await message.answer('Что-то пошло не так :/')
             return
-    ext = ''
-    if len(request) == 1:  # if only `/showtimes` command
-        ext = 'xlsx'
-    else:
-        ext = request[1]
 
-    if not os.path.isfile(f'data/data_{t_date}.{ext}'):
-        await message.answer('Wrong file format requested')
+    if not os.path.isfile(f'data/data_{city}_{t_date}.{ext}'):
+        await message.answer('Указан неверный формат файла')
     else:
-        await message.answer_document(types.InputFile(f'data/data_{t_date}.{ext}'))
+        await message.answer_document(types.InputFile(f'data/data_{city}_{t_date}.{ext}'))
 
 
 @dp.message_handler(commands=['start'])

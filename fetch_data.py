@@ -10,11 +10,11 @@ t_date = datetime.now().strftime('%d_%m_%Y')
 
 
 # get the HTML document
-def collect_data(date: str):
-    response = requests.get(url='https://kino.vl.ru/films/seances/')
+def collect_data(date: str, city: str):
+    response = requests.get(url=f'https://kino.vl.ru/films/seances/?city={city}')
     if response.status_code != 200:
         raise KeyError('Response is not 200')
-    with open(f'data_{date}.html', 'w') as file:
+    with open(f'data_{city}_{date}.html', 'w') as file:
         file.write(response.text)
 
 
@@ -33,24 +33,25 @@ def get_clear_text(text: str) -> tuple[str, str]:
 
 
 # parse event cost
-def parse_cost(ref: str, theatre: str, date: str, time: str) -> str:
+def parse_cost(ref: str, theatre: str, date: str, time: str, city: str) -> str:
     global t_date
     # ref constitutes '/film/50183' (films has a uniq id)
     film_id = ref.split('/')[-2]  # separate id
-    if not os.path.isfile(f'films/{t_date}_{film_id}.html'):  # first check if file exists not to parse it twice
-        response = requests.get(f'https://kino.vl.ru{ref}')
+    if not os.path.isfile(f'films/{city}_{t_date}_{film_id}.html'):  # first check if file exists not to parse it twice
+        response = requests.get(f'https://kino.vl.ru{ref}?city={city}')
         if response.status_code != 200:
             raise KeyError('Response is not 200')
-        with open(f'films/{t_date}_{film_id}.html', 'w') as file:
+        with open(f'films/{city}_{t_date}_{film_id}.html', 'w') as file:
             file.write(response.text)
-    with open(f'films/{t_date}_{film_id}.html') as file:
+    with open(f'films/{city}_{t_date}_{film_id}.html') as file:
         soup = BeautifulSoup(file, "html.parser")
     date_headings = soup.find_all(id="film__seances")[0].contents  # headers with dates of tables with times
     i = 0
     rows = ''
     while i < len(date_headings):
         elem = date_headings[i]
-        if elem != '\n' and elem['class'][0] == 'day-title' and date in elem['data-ga-label']:  # right date found
+        if (elem != '\n' and elem.string != 'Нет сеансов'
+                and elem['class'][0] == 'day-title' and date in elem['data-ga-label']):  # right date found
             rows = date_headings[i + 2].find_next().find_all(class_='film_list seances-table__data-row')  # save events
             break
         i += 1
@@ -64,12 +65,12 @@ def parse_cost(ref: str, theatre: str, date: str, time: str) -> str:
 
 
 # list of tuples (flm_name, theatre, cost) (possibly more than one theatre for the same film)
-def name_to_theatre(elem: BeautifulSoup, date: str, time: str) -> list[tuple[str, str, str]]:
+def name_to_theatre(elem: BeautifulSoup, date: str, time: str, city: str) -> list[tuple[str, str, str]]:
     result = []
     film_name = elem.get_text().strip()
     for theatre in elem.parent.find(class_='table-responsive__theatre-name').find_all('a'):
         _theatre = theatre.get_text().strip()
-        cost = parse_cost(elem.find_next()["href"], _theatre, date, time)
+        cost = parse_cost(elem.find_next()["href"], _theatre, date, time, city)
         result.append((film_name, _theatre, cost))
     return result
 
@@ -81,9 +82,9 @@ def write_event(curr_date: str, curr_time: str, events: dict, triples: list) -> 
 
 
 # parse films from the HTML document
-def parse_data(date: str) -> tuple:
+def parse_data(date: str, city: str) -> tuple:
     # `date` means the real today's date; `curr_date` and `curr_time` are intended for currently parsing elements
-    with open(f'data_{date}.html') as file:
+    with open(f'data_{city}_{date}.html') as file:
         soup = BeautifulSoup(file, 'html.parser')
 
     events = {}
@@ -104,31 +105,31 @@ def parse_data(date: str) -> tuple:
             curr_time, _ = get_clear_text(for_time.get_text())
             events[curr_date][curr_time] = []
             for_name = trs[i].find(class_='table-responsive__film-name')
-            write_event(curr_date, curr_time, events, name_to_theatre(for_name, curr_date, curr_time))
+            write_event(curr_date, curr_time, events, name_to_theatre(for_name, curr_date, curr_time, city))
             if 'rowspan' in for_time.attrs:
                 for j in range(int(for_time['rowspan']) - 1):  # the next `rowspan` elems contain films for `curr_time`
                     i += 1
                     for_name = trs[i].find(class_='table-responsive__film-name')
-                    write_event(curr_date, curr_time, events, name_to_theatre(for_name, curr_date, curr_time))
+                    write_event(curr_date, curr_time, events, name_to_theatre(for_name, curr_date, curr_time, city))
         i += 1
 
     return events, dates_days_of_week
 
 
-def save_data(events: dict, days_of_week: dict, date: str) -> None:
+def save_data(events: dict, days_of_week: dict, date: str, city: str) -> None:
     # create json
-    with open(f'data_{date}.json', 'w') as file:
+    with open(f'data_{city}_{date}.json', 'w') as file:
         json.dump(events, file, indent=4, ensure_ascii=False)
 
     # write headers
-    with open(f'data_{date}.csv', 'w') as file:
+    with open(f'data_{city}_{date}.csv', 'w') as file:
         writer = csv.writer(file)
         writer.writerow(
             ('Дата', 'День недели', 'Время', 'Фильм', 'Кинотеатр', 'Цена от, руб')
         )
 
     # write contents
-    with open(f'data_{date}.csv', 'a') as file:
+    with open(f'data_{city}_{date}.csv', 'a') as file:
         writer = csv.writer(file)
         for [f_date, times] in events.items():
             day_week = days_of_week[f_date]
@@ -138,20 +139,20 @@ def save_data(events: dict, days_of_week: dict, date: str) -> None:
                         (f_date, day_week, time, name, theatre, cost)
                     )
 
-    os.system(f'libreoffice --convert-to ods data_{date}.csv')  # convert to .ods
-    os.system(f'libreoffice --convert-to xlsx data_{date}.csv')  # and .xlsx
+    os.system(f'libreoffice --convert-to ods data_{city}_{date}.csv')  # convert to .ods
+    os.system(f'libreoffice --convert-to xlsx data_{city}_{date}.csv')  # and .xlsx
 
 
-def main():
+def main(city = 'vladivostok'):
     os.chdir('data')
-    collect_data(t_date)
-    events, days_of_week = parse_data(t_date)
-    save_data(events, days_of_week, t_date)
+    collect_data(t_date, city)
+    events, days_of_week = parse_data(t_date, city)
+    save_data(events, days_of_week, t_date, city)
     os.chdir('..')
     
 
-def fetch_data():
-    main()
+def fetch_data(city: str):
+    main(city)
 
 
 if __name__ == '__main__':
