@@ -45,7 +45,7 @@ The `.csv` file is converted to `.xlsx` and `.ods` with `libreoffice`.
 - [ ] Replace dictionary `events` with a list of tuples
 - [ ] Add other cities from the same [source](https://kino.vl.ru/films/seances/)
 - [ ] Find other data resources with better format to parse (hopefully `.json`)
-- [ ] Scrap more info: genre, cost, description, link, film length
+- [ ] Scrap more info: genre, ~~cost~~, description, link, film length
 - [ ] Filter received events right from the bot
 - [ ] Write documentation in Russian
 - [ ] Find another way to convert files from `.csv` to `.xlsx` and `.ods`
